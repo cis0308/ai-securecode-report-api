@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">History</p>
+    <h1>분석 이력</h1>
+    <p>사용자별 소스코드 보안약점 분석 이력입니다.</p>
+</section>
+
+<div class="table-wrap">
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>사용자</th>
+            <th>파일명</th>
+            <th>취약점</th>
+            <th>CWE</th>
+            <th>행안부 유형</th>
+            <th>위험도</th>
+            <th>점수</th>
+            <th>등급</th>
+            <th>보고서</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.username }}</td>
+            <td>{{ item.filename }}</td>
+            <td>{{ item.test_name }}</td>
+            <td>{{ item.cwe or '-' }}</td>
+            <td>{{ item.mois or '-' }}</td>
+            <td>{{ item.issue_severity }}</td>
+            <td>{{ item.score or '-' }}</td>
+            <td>{{ item.grade or '-' }}</td>
+            <td>
+                {% if item.report_path %}
+                <a href="/reports/{{ item.report_path }}">다운로드</a>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="10" class="empty-row">분석 이력이 없습니다.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

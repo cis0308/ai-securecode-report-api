@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Write</p>
+    <h1>{{ board.name }} 글쓰기</h1>
+    <p>{{ board.desc }}</p>
+</section>
+<form class="post-form" method="post" enctype="multipart/form-data">
+    <label>제목</label>
+    <input type="text" name="title" required placeholder="제목을 입력하세요">
+    <label>내용</label>
+    <textarea name="content" required placeholder="내용을 입력하세요"></textarea>
+    <label>첨부파일</label>
+    <input type="file" name="attachment">
+    <div class="form-actions">
+        <button class="btn primary" type="submit">등록</button>
+        <a class="btn ghost" href="/boards/{{ board_type }}">취소</a>
+    </div>
+</form>
+{% endblock %}

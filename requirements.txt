@@ -1,0 +1,12 @@
+aiofiles
+bandit
+fastapi
+jinja2
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+reportlab
+requests
+semgrep
+sqlalchemy
+uvicorn

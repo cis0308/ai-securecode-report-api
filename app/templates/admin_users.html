@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Admin</p>
+    <h1>사용자 관리</h1>
+    <p>관리자만 접근 가능한 사용자 목록 화면입니다.</p>
+</section>
+<div class="table-wrap">
+<table>
+    <thead><tr><th>ID</th><th>아이디</th><th>사용자 구분</th><th>생성일</th></tr></thead>
+    <tbody>
+    {% for user in users %}
+        <tr><td>{{ user.id }}</td><td>{{ user.username }}</td><td>{{ '관리자' if user.role == 'admin' else '일반 사용자' }}</td><td>{{ user.created_at }}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

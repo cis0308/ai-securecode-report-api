@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Admin Dashboard</p>
+    <h1>관리자 대시보드</h1>
+    <p>전체 분석 현황과 행안부 보안약점 유형별 발생 통계입니다.</p>
+</section>
+
+<section class="stat-grid">
+    <div class="stat-card"><span>전체 취약점</span><strong>{{ total }}</strong></div>
+    <div class="stat-card high"><span>HIGH</span><strong>{{ high }}</strong></div>
+    <div class="stat-card medium"><span>MEDIUM</span><strong>{{ medium }}</strong></div>
+    <div class="stat-card low"><span>LOW</span><strong>{{ low }}</strong></div>
+</section>
+
+<div class="table-wrap">
+<table>
+    <thead>
+        <tr>
+            <th>순위</th>
+            <th>행안부 보안약점 유형</th>
+            <th>발생 건수</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for row in top_mois %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ row.mois or '기타 보안약점' }}</td>
+            <td>{{ row.count }}</td>
+        </tr>
+    {% else %}
+        <tr><td colspan="3" class="empty-row">분석 데이터가 없습니다.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

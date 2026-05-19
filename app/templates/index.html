@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>AI SecureCode Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body class="home-body">
+<div class="home-shell">
+    <aside class="home-sidebar">
+        <a class="home-logo" href="/">🛡️ AI SecureCode Report</a>
+        <nav class="side-nav">
+            <a class="active" href="/">🏠 대시보드</a>
+            <a href="/upload">‹› 소스 분석</a>
+            <a href="/history">📄 보고서 이력</a>
+            {% if current_user and current_user.role == 'admin' %}
+            <a href="/admin/users">⚙ 기준 관리</a>
+            {% else %}
+            <a href="/boards/notice">⚙ 기준 관리</a>
+            {% endif %}
+        </nav>
+        <div class="mvp-card">
+            <span>MVP</span>
+            <p>Python, Java, C/C++ 소스코드를 대상으로 Bandit·Semgrep 정적분석ㆍAI LLM 2차 분석 결과를 융합하여 정확하게 보안약점을 식별하고 전문 분석 보고서를 제공합니다.</p>
+            <div class="shield-visual">🛡️</div>
+        </div>
+    </aside>
+
+    <main class="home-main">
+        <header class="home-top">
+            <div></div>
+            <nav>
+                <a class="active" href="/">홈</a>
+                <a href="/upload">분석 실행</a>
+                <a href="/boards/notice">공지사항</a>
+                <a href="/boards/free">자유게시판</a>
+                <a href="/boards/resources">자료실</a>
+                <a href="/boards/qna">Q&A</a>
+                {% if current_user %}
+                <a href="/logout">로그아웃</a>
+                {% else %}
+                <a href="/login">로그인</a>
+                <a class="signup" href="/signup">회원가입</a>
+                {% endif %}
+            </nav>
+        </header>
+
+        <section class="home-grid">
+            <article class="home-card hero-card">
+                <span class="chip">FastAPI · Bandit · Semgrep·AI Report</span>
+                <h1>Python·Java·C/C++소스코드를 업로드 하면 <b>보안약점 보고서</b>를 자동으로 생성합니다.</h1>
+                <p>정적분석 결과를 기반으로 취약점 위치, 위험도, 원인, 개선방안까지 개발자가 이해하기 쉬운 형태로 제공합니다.</p>
+                <div class="hero-actions">
+                    <a class="primary-btn" href="/upload">☁ 분석 시작하기</a>
+                    <a class="light-btn" href="/boards/notice">◉ 기능 보기</a>
+                </div>
+            </article>
+
+            <article class="home-card summary-card weakness-board-card">
+                <div class="summary-head">
+                    <h3>실시간 보안약점 상황판</h3>
+                    <button>전체 분석 {{ total_findings }}건</button>
+                </div>
+
+                <div class="weakness-top5">
+                    {% if top_weaknesses %}
+                        {% for item in top_weaknesses %}
+                        <div class="weakness-row">
+                            <div class="weakness-rank">{{ loop.index }}</div>
+                            <div class="weakness-info">
+                                <div class="weakness-title">
+                                    <strong>{{ item.name }}</strong>
+                                    <span class="risk {{ item.severity|lower }}">{{ item.severity }}</span>
+                                </div>
+                                <div class="weakness-bar">
+                                    <i style="width: {{ item.ratio if item.ratio > 8 else 8 }}%"></i>
+                                </div>
+                            </div>
+                            <div class="weakness-count">{{ item.count }}건</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="weakness-empty">
+                            <strong>아직 누적된 분석 결과가 없습니다.</strong>
+                            <p>소스코드 분석을 실행하면 가장 많이 발생한 보안약점 5가지가 이곳에 표시됩니다.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </article>
+
+            {% set board_titles = {'notice':'공지사항', 'free':'자유 게시판', 'resources':'자료실', 'qna':'Q&A 게시판'} %}
+            {% set board_icons = {'notice':'🔔', 'free':'🟢', 'resources':'🟣', 'qna':'❓'} %}
+            {% for board in ['notice', 'free', 'resources', 'qna'] %}
+            <article class="home-card board-card">
+                <div class="board-head">
+                    <div class="board-title"><span>{{ board_icons[board] }}</span><h3>{{ board_titles[board] }}</h3></div>
+                    <a href="/boards/{{ board }}">더보기 ›</a>
+                </div>
+                <ul>
+                    {% for post in recent_posts[board] %}
+                    <li><a href="/boards/{{ board }}/{{ post.id }}">{{ post.title }}</a><time>{{ post.created_at.strftime('%Y-%m-%d') }}</time></li>
+                    {% endfor %}
+                    {% for i in range(5 - recent_posts[board]|length) %}
+                    <li class="empty"><a>등록된 게시글이 없습니다.</a><time>-</time></li>
+                    {% endfor %}
+                </ul>
+            </article>
+            {% endfor %}
+        </section>
+    </main>
+</div>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

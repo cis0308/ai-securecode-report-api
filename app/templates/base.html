@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>AI SecureCode Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+<header class="home-top sub-topbar">
+    <div class="sub-top-left">
+        <a class="sub-logo" href="/">🛡️ AI SecureCode Report</a>
+    </div>
+    <nav>
+        <a class="{{ 'active' if request.url.path == '/' else '' }}" href="/">홈</a>
+        <a class="{{ 'active' if request.url.path.startswith('/upload') else '' }}" href="/upload">분석 실행</a>
+        <a class="{{ 'active' if request.url.path.startswith('/boards/notice') else '' }}" href="/boards/notice">공지사항</a>
+        <a class="{{ 'active' if request.url.path.startswith('/boards/free') else '' }}" href="/boards/free">자유게시판</a>
+        <a class="{{ 'active' if request.url.path.startswith('/boards/resources') else '' }}" href="/boards/resources">자료실</a>
+        <a class="{{ 'active' if request.url.path.startswith('/boards/qna') else '' }}" href="/boards/qna">Q&A</a>
+        {% if current_user %}
+            <a class="{{ 'active' if request.url.path.startswith('/history') else '' }}" href="/history">분석 이력</a>
+            {% if current_user.role == 'admin' %}
+                <a class="{{ 'active' if request.url.path.startswith('/admin/dashboard') else '' }}" href="/admin/dashboard">대시보드</a>
+                <a class="{{ 'active' if request.url.path.startswith('/admin/users') else '' }}" href="/admin/users">사용자 관리</a>
+            {% endif %}
+            <a href="/logout">로그아웃</a>
+        {% else %}
+            <a href="/login">로그인</a>
+            <a class="signup" href="/signup">회원가입</a>
+        {% endif %}
+    </nav>
+</header>
+
+<main class="page-container">
+    {% block content %}{% endblock %}
+</main>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>

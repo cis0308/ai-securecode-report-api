@@ -1,0 +1,89 @@
+rules:
+  - id: java-sql-concat
+    languages: [java]
+    severity: ERROR
+    message: "SQL 쿼리를 문자열 결합으로 생성하고 있습니다. SQL Injection 위험이 있습니다."
+    metadata: {cwe: "CWE-89", mois: "SQL 삽입"}
+    pattern-either:
+      - pattern: $STMT.executeQuery($SQL + $X)
+      - pattern: $STMT.executeUpdate($SQL + $X)
+      - pattern: $CONN.prepareStatement($SQL + $X)
+
+  - id: java-runtime-exec
+    languages: [java]
+    severity: ERROR
+    message: "Runtime.exec 사용은 명령어 인젝션 위험이 있습니다."
+    metadata: {cwe: "CWE-78", mois: "운영체제 명령어 삽입"}
+    pattern: Runtime.getRuntime().exec(...)
+
+  - id: java-processbuilder
+    languages: [java]
+    severity: WARNING
+    message: "ProcessBuilder 사용 시 외부 입력이 포함되면 명령어 인젝션 위험이 있습니다."
+    metadata: {cwe: "CWE-78", mois: "운영체제 명령어 삽입"}
+    pattern: new ProcessBuilder(...)
+
+  - id: java-hardcoded-secret
+    languages: [java]
+    severity: WARNING
+    message: "하드코딩된 비밀번호 또는 비밀값으로 의심됩니다."
+    metadata: {cwe: "CWE-259", mois: "하드코딩된 중요정보"}
+    pattern-regex: '(?i)(password|passwd|pwd|secret|apikey|api_key)\s*=\s*"[^"]{4,}"'
+
+  - id: java-weak-hash
+    languages: [java]
+    severity: WARNING
+    message: "MD5/SHA1 등 취약한 해시 알고리즘 사용 가능성이 있습니다."
+    metadata: {cwe: "CWE-327", mois: "취약한 암호화 알고리즘 사용"}
+    pattern-regex: 'MessageDigest\.getInstance\("(MD5|SHA1|SHA-1)"\)'
+
+  - id: java-xxe-factory
+    languages: [java]
+    severity: WARNING
+    message: "XML 파서 사용 시 XXE 방어 설정이 필요합니다."
+    metadata: {cwe: "CWE-611", mois: "XML 외부 개체 참조 제한 부재"}
+    pattern: DocumentBuilderFactory.newInstance()
+
+  - id: c-system-call
+    languages: [c, cpp]
+    severity: ERROR
+    message: "system() 사용은 명령어 인젝션 위험이 있습니다."
+    metadata: {cwe: "CWE-78", mois: "운영체제 명령어 삽입"}
+    pattern: system(...)
+
+  - id: c-popen-call
+    languages: [c, cpp]
+    severity: ERROR
+    message: "popen() 사용은 명령어 인젝션 위험이 있습니다."
+    metadata: {cwe: "CWE-78", mois: "운영체제 명령어 삽입"}
+    pattern: popen(...)
+
+  - id: c-gets
+    languages: [c, cpp]
+    severity: ERROR
+    message: "gets()는 버퍼 오버플로우 위험이 있어 사용하면 안 됩니다."
+    metadata: {cwe: "CWE-120", mois: "버퍼 오버플로우"}
+    pattern: gets(...)
+
+  - id: c-strcpy-strcat
+    languages: [c, cpp]
+    severity: WARNING
+    message: "strcpy/strcat 사용은 버퍼 오버플로우 위험이 있습니다."
+    metadata: {cwe: "CWE-120", mois: "버퍼 오버플로우"}
+    pattern-either:
+      - pattern: strcpy(...)
+      - pattern: strcat(...)
+
+  - id: c-sprintf
+    languages: [c, cpp]
+    severity: WARNING
+    message: "sprintf 사용은 버퍼 오버플로우 위험이 있습니다. snprintf 사용을 권장합니다."
+    metadata: {cwe: "CWE-120", mois: "버퍼 오버플로우"}
+    pattern: sprintf(...)
+
+  - id: c-hardcoded-secret
+    languages: [c, cpp]
+    severity: WARNING
+    message: "하드코딩된 비밀번호 또는 비밀값으로 의심됩니다."
+    metadata: {cwe: "CWE-259", mois: "하드코딩된 중요정보"}
+    pattern-regex: '(?i)(password|passwd|pwd|secret|apikey|api_key)\s*=\s*"[^"]{4,}"'

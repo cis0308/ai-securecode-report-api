@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="post-detail">
+    <div class="post-title-area">
+        <p class="eyebrow">{{ board.name }}</p>
+        <h1>{{ post.title }}</h1>
+        <div class="post-meta">
+            <span>작성자: {{ post.author.username if post.author else '-' }}</span>
+            <span>조회: {{ post.view_count }}</span>
+            <span>작성일: {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+        </div>
+    </div>
+    {% if post.attachment_name %}
+    <div class="attachment-box">첨부파일: <a href="/boards/{{ board_type }}/{{ post.id }}/download">{{ post.attachment_name }}</a></div>
+    {% endif %}
+    <article class="post-content">{{ post.content | replace('\n', '<br>') | safe }}</article>
+    <div class="form-actions">
+        <a class="btn ghost" href="/boards/{{ board_type }}">목록</a>
+        {% if can_delete %}
+        <form method="post" action="/boards/{{ board_type }}/{{ post.id }}/delete" onsubmit="return confirm('삭제하시겠습니까?');">
+            <button class="btn danger" type="submit">삭제</button>
+        </form>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

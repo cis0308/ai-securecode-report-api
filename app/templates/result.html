@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <p class="eyebrow">Analysis Result</p>
+    <h1>분석 결과</h1>
+    <p>{{ result.filename }} / 전체 소스 {{ result.source_file_count or result.python_file_count }}개 (Python {{ result.python_file_count or 0 }}개, Java {{ result.java_file_count or 0 }}개, C/C++ {{ result.c_cpp_file_count or 0 }}개)</p>
+</section>
+
+{% if result.error %}
+<div class="alert">{{ result.error }}</div>
+{% endif %}
+
+<section class="stat-grid">
+    <div class="stat-card"><span>총 탐지</span><strong>{{ result.total }}</strong></div>
+    <div class="stat-card high"><span>HIGH</span><strong>{{ result.summary.HIGH }}</strong></div>
+    <div class="stat-card medium"><span>MEDIUM</span><strong>{{ result.summary.MEDIUM }}</strong></div>
+    <div class="stat-card low"><span>LOW</span><strong>{{ result.summary.LOW }}</strong></div>
+</section>
+
+<section class="stat-grid">
+    <div class="stat-card"><span>보안 점수</span><strong>{{ result.security.score }}</strong></div>
+    <div class="stat-card"><span>보안 등급</span><strong>{{ result.security.grade }}</strong></div>
+    <div class="stat-card"><span>보고서</span><strong>PDF</strong></div>
+    <div class="stat-card"><span>LLM 분석</span><strong>ON</strong></div>
+</section>
+
+{% if result.report_file %}
+<p>
+    <a class="btn primary" href="/reports/{{ result.report_file }}">PDF 보고서 다운로드</a>
+</p>
+{% endif %}
+
+<section class="issue-card">
+    <h2>AI LLM 모델 기반 보안 분석</h2>
+    <p class="muted">사용 LLM 모델: {{ result.llm_model or '-' }}</p>
+    <div class="ai-box">
+        <pre>{{ result.llm_result }}</pre>
+    </div>
+</section>
+
+<section class="result-list">
+    <h2>SAST 상세 분석 결과</h2>
+    {% if result.issues %}
+        {% for issue in result.issues %}
+        <article class="issue-card">
+            <div class="issue-head">
+                <h3>{{ issue.test_name }}</h3>
+                <span class="severity {{ issue.issue_severity|lower }}">{{ issue.issue_severity }}</span>
+            </div>
+            <p class="code-path">{{ issue.filename }} : {{ issue.line_number }} line</p>
+            <p>{{ issue.issue_text }}</p>
+            <p><b>분석도구:</b> {{ issue.tool or "Bandit" }}</p>\n            <p><b>CWE:</b> {{ issue.cwe }}</p>
+            <p><b>행안부 보안약점 유형:</b> {{ issue.mois }}</p>
+            <div class="ai-box">
+                <h4>AI 분석 설명</h4>
+                <p><b>원인:</b> {{ issue.ai.cause }}</p>
+                <p><b>영향:</b> {{ issue.ai.impact }}</p>
+                <p><b>개선방안:</b> {{ issue.ai.recommendation }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    {% else %}
+        <div class="empty-box">탐지된 보안약점이 없습니다.</div>
+    {% endif %}
+</section>
+{% endblock %}

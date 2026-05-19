@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+*.db
+uploads/*
+reports/*
+temp/*
+!uploads/.gitkeep
+!uploads/board_files/.gitkeep
+!reports/.gitkeep
+!temp/.gitkeep

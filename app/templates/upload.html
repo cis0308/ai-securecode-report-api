@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="page-head">
+    <p class="eyebrow">Security Scan</p>
+
+    <h1>보안약점 분석 실행</h1>
+
+    <p>
+        Python·Java·C/C++ 소스코드를 업로드하면
+        보안약점 분석 보고서를 자동으로 생성합니다.
+    </p>
+</section>
+
+<form id="analyzeForm"
+      class="upload-panel"
+      enctype="multipart/form-data">
+
+    <!-- =========================
+         모델 선택
+    ========================== -->
+
+    <label for="modelSelect">
+        외부 LLM 모델 선택
+    </label>
+
+    <select id="modelSelect"
+            name="model_name"
+            class="model-select">
+
+        {% for model in models %}
+
+        <option value="{{ model }}"
+            {% if model == "openai/gpt-4o-mini" %}
+                selected
+            {% endif %}
+        >
+
+            {% if model == "openai/gpt-5.4-mini" %}
+
+                GPT-5.4 mini - FastAPI/Python
+
+            {% elif model == "openai/gpt-4.1-mini" %}
+
+                GPT-4.1 mini - FastAPI/Python
+
+            {% elif model == "anthropic/claude-sonnet-4.6" %}
+
+                Claude 4.6 Sonnet - Java/C/C++
+
+            {% elif model == "google/gemini-2.5-pro" %}
+
+                Gemini 2.5 Pro - 대용량 코드베이스 분석
+
+            {% elif model == "meta-llama/llama-3.3-70b-instruct:free" %}
+
+                Llama 3.3 70B Free - 무료 사용
+
+            {% else %}
+
+                {{ model }}
+
+            {% endif %}
+
+        </option>
+
+        {% endfor %}
+
+    </select>
+
+    <!-- =========================
+         업로드 영역
+    ========================== -->
+
+    <div id="dropZone"
+         class="drop-zone">
+
+        <div class="drop-icon">
+            ⬆
+        </div>
+
+        <h2>
+            파일을 여기에 드래그하거나 클릭하세요
+        </h2>
+
+        <p>
+            .py, .java, .c, .cpp,
+            .h, .hpp, .zip 파일 지원
+        </p>
+
+        <input id="fileInput"
+               type="file"
+               name="file"
+               accept=".py,.java,.c,.cpp,.h,.hpp,.zip"
+               required>
+
+        <div id="fileName"
+             class="file-name">
+
+            선택된 파일 없음
+
+        </div>
+    </div>
+
+    <button class="btn primary large"
+            type="submit">
+
+        보안약점 분석 실행
+
+    </button>
+
+</form>
+
+
+<section id="progressArea" class="progress-card" style="display:none;">
+    <h2>분석 진행 상황</h2>
+
+    <div class="progress-info">
+        <span id="progressMessage">분석 준비 중</span>
+        <strong id="progressPercent">0%</strong>
+    </div>
+
+    <div class="progress-bar">
+        <i id="progressBar"></i>
+    </div>
+
+    <p class="eta">예상 남은 시간: <b id="etaText">-</b></p>
+</section>
+{% endblock %}
